@@ -1,55 +1,107 @@
-# SimpleRISC Assembler
+# **SimpleRISC Assembler**  
 
-A basic assembler that converts SimpleRISC assembly language instructions into 32-bit machine code.
+This project implements an assembler for the **SimpleRISC** architecture. It provides both a **graphical interface** and a **command-line version**, allowing users to convert assembly instructions into **binary machine code**. This serves as an **educational tool** to understand how an assembler processes source code and generates machine instructions.  
 
-## Group Members 
-1) Kiran Kumar Bommu - 2302VL03  
-2) Vinay Kethavath - 2302CM04  
-3) Karthik Gandam - 2302VL09  
-4) Naveen Reddy - 2302VL04  
-5) Rahul Rathod - 2302VL06  
+## **Project Members**  
 
-## Features
-- Supports a set of arithmetic, logical, branch, and memory instructions.
-- Handles labels for branching and function calls.
-- Converts assembly to binary machine code.
+👥 **Contributors:**  
+1️⃣ **Kiran Kumar Bommu** - 2302VL03  
+2️⃣ **Vinay Kethavath** - 2302CM04  
+3️⃣ **Karthik Gandam** - 2302VL09  
+4️⃣ **Naveen Reddy** - 2302VL04  
+5️⃣ **Rahul Rathod** - 2302VL06  
 
-## Usage
+---
 
-To assemble a SimpleRISC assembly file into machine code, use:
+## **Project Structure**  
 
-```sh
-python assembler.py input.asm output.bin
 ```
+GUI_Assembler/  
+│── Frontend.html        # Web-based GUI for the assembler  
+│── backend.py           # Backend processing for the GUI  
+│  
+SimpleAssembler/  
+│── assembler.py         # Command-line assembler implementation  
+│── input.asm            # Sample input assembly file  
+│── output.bin           # Generated binary machine code  
+│  
+README.md                # Project documentation  
+```  
 
-### Example Assembly Code (input.asm)
-```assembly
-START:  ADD R1, R2, 5   # Add immediate value 5 to R2 and store in R1
-        CMP R1, 10      # Compare R1 with 10
-        BEQ END         # Branch to END if equal
-        B START         # Unconditional branch to START
-END:    NOP             # No operation
-```
+---
 
-### Assembled Output (output.bin)
-```
-00000100010010000000000000000101
-00101100000001000000000000001010
-10000000000000000000000000000100
-10010000000000000000000000000000
-01101000000000000000000000000000
-```
+## **Features**  
 
-## Supported Instructions
-- **Arithmetic & Logical**: ADD, SUB, MUL, DIV, MOD, AND, OR, CMP, NOT, MOV
-- **Shift Operations**: LSL, LSR, ASR
-- **Branching**: B, BEQ, BGT, CALL, RET
-- **Memory Access**: LD, ST
-- **Other**: NOP
+✔ **Supports arithmetic, logical, branch, and memory instructions**  
+✔ **Handles labels for branching and function calls**  
+✔ **Provides a GUI and CLI version for ease of use**  
+✔ **Converts SimpleRISC assembly into binary machine code**  
 
-## Limitations
-- Registers are assumed to be in the format `R<number>` but lack range checks.
-- No immediate value range validation.
+---
 
+## **Getting Started**  
 
+### **Prerequisites**  
 
+To run the GUI-based assembler:  
+- **Python 3.x** installed  
+- **Flask** (for backend)  
+
+To use the command-line assembler:  
+- Python 3.x  
+
+---
+
+## **Setup and Usage**  
+
+### **Using the GUI Assembler**  
+1. Clone the repository:  
+   ```sh
+   git clone https://github.com/your-repo/Assembler.git  
+   cd Assembler/GUI_Assembler  
+   ```  
+2. Run the backend:  
+   ```sh
+   python backend.py  
+   ```  
+3. Open `Frontend.html` in a browser.  
+
+---
+
+### **Using the Command-Line Assembler**  
+1. Navigate to the **SimpleAssembler** directory:  
+   ```sh
+   cd SimpleAssembler  
+   ```  
+2. Assemble an input file:  
+   ```sh
+   python assembler.py input.asm output.bin  
+   ```  
+
+---
+
+## **Supported Instructions**  
+
+### **Arithmetic & Logical**  
+✅ ADD, SUB, MUL, DIV, MOD, AND, OR, CMP, NOT, MOV  
+
+### **Shift Operations**  
+✅ LSL, LSR, ASR  
+
+### **Branching**  
+✅ B, BEQ, BGT, CALL, RET  
+
+### **Memory Access**  
+✅ LD, ST  
+
+### **Other**  
+✅ NOP  
+
+---
+
+## **Limitations**  
+
+⚠ **Registers are assumed to be in the format `R<number>` but lack range checks.**  
+⚠ **No validation for immediate value range.**  
+
+---
