@@ -78,15 +78,9 @@ def assemble_instruction(instruction,label_dict,line_number):
                     source_reg1 = format(int(asm[2][1:]), '04b')
                     imm_val = format(int(asm[3]), '018b')
                     return opcode + immediate_flag + dest_register + source_reg1 + imm_val
+                
                 else:
-                    if not asm[3].isdigit():
-                        immediate_flag = '0'
-                        dest_register = format(int(asm[2][1:]), '04b')
-                        source_reg1 = format(int(asm[3][1:]), '04b')
-                        source_reg2 = format(int(asm[4][1:]), '04b')
-                        return opcode + immediate_flag + dest_register + source_reg1 + source_reg2 + '0' * 14
-                    else:
-                        raise ValueError(f"error in source register 2 = {asm[3]}")
+                    raise ValueError(f"error in source register 2 = {asm[3]}")
 
             else:
                 raise ValueError(f"error in instruction = {instruction}")
@@ -102,11 +96,13 @@ def assemble_instruction(instruction,label_dict,line_number):
                 imm_val = format(int(asm[2]), '018b')
                 return opcode + immediate_flag + dest_register + '0' * 4 + imm_val
 
-         else:
+         elif asm[2][1:].isdigit():
                 immediate_flag = '0'
                 dest_register = format(int(asm[1][1:]), '04b')
                 source_reg2 = format(int(asm[2][1:]), '04b')
                 return opcode + immediate_flag + dest_register + '0' * 4 + source_reg2 + '0' * 14
+         else :
+             raise ValueError(f"eror in r2/imm value = {asm[2]}")
 
     elif asm[0].upper() in branch_4: #branch_4 = {'LD','ST'}
         if len(asm) == 4:
@@ -124,10 +120,7 @@ def assemble_instruction(instruction,label_dict,line_number):
                 source_reg2 = format(int(asm[3][1:]), '04b')
                 return opcode + immediate_flag + dest_register + source_reg1 + source_reg2 + '0' * 14
             else :
-                immediate_flag = '1'
-                dest_register = format(int(asm[1][1:]), '04b')
-                source_reg1 = format(int(asm[2][1:]), '04b')
-                source_reg2 = format(int)
+                raise ValueError(f"error in rs2/imm value = asm[3]")
 
         else:
             raise ValueError(f"error in instruction  =  {instruction}")
@@ -195,41 +188,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
