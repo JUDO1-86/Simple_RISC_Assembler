@@ -3,11 +3,11 @@
 A basic assembler that converts SimpleRISC assembly language instructions into 32-bit machine code.
 
 ## Group Members 
-1)Kiran Kumar Bommu-2302VL03
-2)Vinay Kethavath-2302CM04
-3)Karthik Gandam-2302VL09
-4)Naveen Reddy-2302VL04
-5)Rahul Rathod-230VL06
+1) Kiran Kumar Bommu - 2302VL03  
+2) Vinay Kethavath - 2302CM04  
+3) Karthik Gandam - 2302VL09  
+4) Naveen Reddy - 2302VL04  
+5) Rahul Rathod - 2302VL06  
 
 ## Features
 - Supports a set of arithmetic, logical, branch, and memory instructions.
