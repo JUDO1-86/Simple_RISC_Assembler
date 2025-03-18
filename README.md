@@ -58,7 +58,7 @@ To use the command-line assembler:
 1. Clone the repository:  
    ```sh
    git clone https://github.com/JUDO1-86/Simple_RISC_Assembler.git
-   cd Assembler/GUI_Assembler  
+   cd Assembler
    ```  
 2. Run the backend:  
    ```sh
