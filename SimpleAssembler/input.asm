@@ -1,0 +1,3 @@
+MOV R1 r25
+ADD R2 R1 10
+
