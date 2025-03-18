@@ -2,7 +2,8 @@ from flask import Flask, request, jsonify
 from flask_cors import CORS
 
 app = Flask(__name__)
-CORS(app, resources={r"/assemble": {"origins": "http://127.0.0.1:3000"}})
+CORS(app)
+
 
 opcode_mapping = {
     'ADD': '00000', 'SUB': '00001', 'MUL': '00010', 'DIV': '00011', 'MOD': '00100', 'CMP': '00101',
@@ -10,25 +11,6 @@ opcode_mapping = {
     'ASR': '01100', 'NOP': '01101', 'LD': '01110', 'ST': '01111', 'BEQ': '10000', 'BGT': '10001',
     'B': '10010', 'CALL': '10011', 'RET': '10100'
 }
-
-def validate_register(register):
-    """Ensure register is within R1-R16 (case-insensitive)"""
-    print(f"Validating register: {register}")  # Debugging
-
-    register = register.upper()  # Convert to uppercase 
-
-    if not (register.startswith('R') and register[1:].isdigit()):
-        raise ValueError(f"Invalid register format: {register}")
-
-    reg_num = int(register[1:])
-    if reg_num < 1 or reg_num > 16:  # Allow only R1-R16
-        raise ValueError(f"Register {register} out of bounds (must be R1-R16)")
-    
-    binary_representation = format(reg_num - 1, '04b')
-    print(f"Register {register} -> Binary: {binary_representation}")  # Debugging
-
-    return binary_representation
-
 
 def normalize_instruction(instruction):
     """Removes unnecessary spaces and normalizes instruction format."""
@@ -48,88 +30,136 @@ def assemble_instruction(instruction, label_dict, line_number):
     opcode = opcode_mapping.get(asm[0].upper())
     if opcode is None:
         raise ValueError(f"Unknown instruction: {asm[0]}")
-
+    branch_1 = {'CALL','B','BEQ','BGT'}
     branch_2 = {'ADD','SUB','MUL','DIV','MOD','AND','OR','LSL','LSR','ASR'}
     branch_3 = {'NOT','MOV'}
     branch_4 = {'LD','ST'}
     branch_5 = {'NOP','RET'}
     branch_6 = {'CMP'}
 
-    # Branch Instructions (CALL, B, BEQ, BGT)
     if asm[0].upper() in {'CALL', 'B', 'BEQ', 'BGT'}:
-       target = asm[1]
-       if target in label_dict:  # If the target is a label
-       # Calculate relative address as offset from the current line number
-          target_address = label_dict[target] - (line_number + 1)
-       elif target.isdigit():  # If the target is a direct address
-          target_address = int(target)
-       else:
-          raise ValueError(f"Undefined label or invalid address '{target}'")
-       # Convert the target address to a 27-bit two's complement binary value
-       if target_address < 0:
-          imm_val = format((1 << 27) + target_address, '027b')  # Two's complement for negative values
-       else:
-          imm_val = format(target_address, '027b')
+        target = asm[1]
+        if target in label_dict:
+            target_address = label_dict[target]
+        elif target.isdigit():
+            target_address = int(target)
+        else:
+            raise ValueError(f"Error: Undefined label or invalid address '{target}'")
 
-       return opcode + imm_val
+        imm_val = format(target_address, '027b')
+        return opcode + imm_val
 
     elif asm[0].upper() in branch_2:
-        print(f"Parsing arithmetic instruction: {instruction}")  # Debugging
+    # branch_2 = {'ADD','SUB','MUL','DIV','MOD','AND','OR','LSL','LSR','ASR'}
+        if not asm[0].endswith(':'):
+            if len(asm) == 4:
+                if not asm[1][1:].isdigit():
+                    raise ValueError(f"error in destination register = {asm[1]}")
+                if not asm[2][1:].isdigit():
+                    raise ValueError(f"error in source register 1 = {asm[2]}")
 
+                elif asm[3].isdigit():
+                    immediate_flag = '1'
+                    dest_register = format(int(asm[1][1:]), '04b')
+                    source_reg1 = format(int(asm[2][1:]), '04b')
+                    imm_val = format(int(asm[3]), '018b')
+                    return opcode + immediate_flag + dest_register + source_reg1 + imm_val
+                else:
+                    if not asm[3].isdigit():
+                        immediate_flag = '0'
+                        dest_register = format(int(asm[1][1:]), '04b')
+                        source_reg1 = format(int(asm[2][1:]), '04b')
+                        source_reg2 = format(int(asm[3][1:]), '04b')
+                        return opcode + immediate_flag + dest_register + source_reg1 + source_reg2 + '0' * 14
+                    else:
+                        raise ValueError(f"error in source register 2 = {asm[3]}")
+        elif asm[0].endswith(':'):
+            if len(asm) == 4:
+                if not asm[1][1:].isdigit():
+                    raise ValueError(f"error in destination register = {asm[1]}")
+                if not asm[2][1:].isdigit():
+                    raise ValueError(f"error in source register 1 = {asm[2]}")
+
+                elif asm[3].isdigit():
+                    immediate_flag = '1'
+                    dest_register = format(int(asm[1][1:]), '04b')
+                    source_reg1 = format(int(asm[2][1:]), '04b')
+                    imm_val = format(int(asm[3]), '018b')
+                    return opcode + immediate_flag + dest_register + source_reg1 + imm_val
+                else:
+                    if not asm[3].isdigit():
+                        immediate_flag = '0'
+                        dest_register = format(int(asm[2][1:]), '04b')
+                        source_reg1 = format(int(asm[3][1:]), '04b')
+                        source_reg2 = format(int(asm[4][1:]), '04b')
+                        return opcode + immediate_flag + dest_register + source_reg1 + source_reg2 + '0' * 14
+                    else:
+                        raise ValueError(f"error in source register 2 = {asm[3]}")
+
+            else:
+                raise ValueError(f"error in instruction = {instruction}")
+
+    elif asm[0].upper() in branch_3: #  branch_3 = {'NOT','MOV'}
+
+         if not asm[1][1:].isdigit():
+             raise ValueError(f"error in instruction = {asm[1]}")
+
+         if asm[2].isdigit():
+                immediate_flag = '1'
+                dest_register = format(int(asm[1][1:]), '04b')
+                imm_val = format(int(asm[2]), '018b')
+                return opcode + immediate_flag + dest_register + '0' * 4 + imm_val
+
+         else:
+                immediate_flag = '0'
+                dest_register = format(int(asm[1][1:]), '04b')
+                source_reg2 = format(int(asm[2][1:]), '04b')
+                return opcode + immediate_flag + dest_register + '0' * 4 + source_reg2 + '0' * 14
+
+    elif asm[0].upper() in branch_4: #branch_4 = {'LD','ST'}
         if len(asm) == 4:
-          dest_register = validate_register(asm[1])
-          source_reg1 = validate_register(asm[2])
-
-          if asm[3].isdigit():
-            immediate_flag = '1'
-            imm_val = format(int(asm[3]), '018b')
-            print(f"Immediate value detected: {imm_val}")  # Debugging
-            return opcode + immediate_flag + dest_register + source_reg1 + imm_val
-          else:
-            source_reg2 = validate_register(asm[3])
-            print(f"Registers -> Dest: {dest_register}, Src1: {source_reg1}, Src2: {source_reg2}")  # Debugging
-            return opcode + '0' + dest_register + source_reg1 + source_reg2 + '0' * 14
-
-    elif asm[0].upper() in branch_3:
-        dest_register = validate_register(asm[1])
-
-        if asm[2].isdigit():
-            immediate_flag = '1'
-            imm_val = format(int(asm[2]), '018b')
-            return opcode + immediate_flag + dest_register + '0' * 4 + imm_val
-        else:
-            source_reg2 = validate_register(asm[2])
-            return opcode + '0' + dest_register + '0' * 4 + source_reg2 + '0' * 14
-
-    elif asm[0].upper() in branch_4:
-        if len(asm) == 4:
-            dest_register = validate_register(asm[1])
-            source_reg1 = validate_register(asm[2])
 
             if asm[3].isdigit():
                 immediate_flag = '1'
+                dest_register = format(int(asm[1][1:]), '04b')
+                source_reg1 = format(int(asm[2][1:]), '04b')
                 imm_val = format(int(asm[3]), '04b')
                 return opcode + immediate_flag + dest_register + source_reg1 + imm_val + '0' * 14
-            else:
-                source_reg2 = validate_register(asm[3])
-                return opcode + '0' + dest_register + source_reg1 + source_reg2 + '0' * 14
+            elif asm[3][1:].isdigit():
+                immediate_flag = '0'
+                dest_register = format(int(asm[1][1:]), '04b')
+                source_reg1 = format(int(asm[2][1:]), '04b')
+                source_reg2 = format(int(asm[3][1:]), '04b')
+                return opcode + immediate_flag + dest_register + source_reg1 + source_reg2 + '0' * 14
+            else :
+                immediate_flag = '1'
+                dest_register = format(int(asm[1][1:]), '04b')
+                source_reg1 = format(int(asm[2][1:]), '04b')
+                source_reg2 = format(int)
 
-    elif asm[0].upper() in branch_5:
+        else:
+            raise ValueError(f"error in instruction  =  {instruction}")
+
+    elif asm[0].upper() in branch_5:  # branch_5 = {'NOP','RET'}
+
         return opcode + '0'*27
 
-    elif asm[0].upper() in branch_6:
+    elif asm[0].upper() in branch_6:   # branch_6 = {'CMP'}
         if len(asm) == 3:
-            source_reg1 = validate_register(asm[1])
-
             if asm[2].isdigit():
                 immediate_flag = '1'
-                imm_val = format(int(asm[2]), '018b')
-                return opcode + immediate_flag + '0' * 4 + source_reg1 + imm_val
-            else:
-                source_reg2 = validate_register(asm[2])
-                return opcode + '0' + source_reg1 + source_reg2 + '0' * 14
+                source_reg1 = format(int(asm[1][1:]), '04b')
 
-    raise ValueError(f"error in instruction = {instruction}")
+                imm_val = format(int(asm[2]), '018b')
+                return opcode + immediate_flag +'0'*4 + source_reg1 + imm_val
+            else:
+                immediate_flag = '0'
+
+                source_reg1 = format(int(asm[1][1:]), '04b')
+                source_reg2 = format(int(asm[2][1:]), '04b')
+                return opcode + immediate_flag + source_reg1 + source_reg2 + '0' * 14
+        else:
+            raise ValueError(f"error in instruction = {instruction}") 
 
 def assemble_code(assembly_code):
     label_dict = {}
@@ -180,3 +210,4 @@ def assemble():
 
 if __name__ == "__main__":
     app.run(port=8080, debug=True)
+
