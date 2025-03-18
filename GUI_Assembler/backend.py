@@ -192,6 +192,9 @@ def assemble_code(assembly_code):
     print("Generated Machine Code:", output)
 
     return {"machine_code": output}
+@app.route("/")
+def home():
+    return "Welcome to the Simple RISC Assembler API!"
 
 @app.route('/assemble', methods=['POST'])
 def assemble():
