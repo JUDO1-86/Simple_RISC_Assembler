@@ -57,7 +57,7 @@ To use the command-line assembler:
 ### **Using the GUI Assembler**  
 1. Clone the repository:  
    ```sh
-   git clone https://github.com/your-repo/Assembler.git  
+   git clone https://github.com/JUDO1-86/Assembler.git  
    cd Assembler/GUI_Assembler  
    ```  
 2. Run the backend:  
