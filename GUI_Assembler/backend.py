@@ -157,7 +157,7 @@ def assemble_instruction(instruction, label_dict, line_number):
 
                 source_reg1 = format(int(asm[1][1:]), '04b')
                 source_reg2 = format(int(asm[2][1:]), '04b')
-                return opcode + immediate_flag + source_reg1 + source_reg2 + '0' * 14
+                return opcode + immediate_flag + '0'*4 + source_reg1 + source_reg2 + '0' * 14
         else:
             raise ValueError(f"error in instruction = {instruction}") 
 
