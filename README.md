@@ -16,16 +16,21 @@ This project implements an assembler for the **SimpleRISC** architecture. It pro
 ## **Project Structure**  
 
 ```
-GUI_Assembler/  
-│── Frontend.html        # Web-based GUI for the assembler  
-│── backend.py           # Backend processing for the GUI  
-│  
-SimpleAssembler/  
-│── assembler.py         # Command-line assembler implementation  
-│── input.asm            # Sample input assembly file  
-│── output.bin           # Generated binary machine code  
-│  
-README.md                # Project documentation  
+Simple_RISC_Assembler/
+│
+├── GUI_Assembler/
+│   ├── Frontend.html
+│   ├── backend.py
+│   ├── requirements.txt
+│
+├── SimpleAssembler/
+│   ├── assembler.py
+│   ├── input.asm
+│   ├── output.bin
+│
+├── README.md
+├── Rules.txt
+
 ```  
 
 ---
@@ -57,6 +62,8 @@ To use the command-line assembler:
 ### **Using the GUI Assembler**  
 You can access the GUI Assembler through this link  
 https://judo1-86.github.io/Frontend-assembler/ 
+
+![Screenshot 2025-03-19 151525](https://github.com/user-attachments/assets/daf0466e-afc9-4337-8636-31bfb3e97a30)
 
 ---
 
