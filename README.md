@@ -55,16 +55,8 @@ To use the command-line assembler:
 ## **Setup and Usage**  
 
 ### **Using the GUI Assembler**  
-1. Clone the repository:  
-   ```sh
-   git clone https://github.com/JUDO1-86/Simple_RISC_Assembler.git
-   cd Simple_RISC_Assembler
-   ```  
-2. Run the backend:  
-   ```sh
-   python backend.py  
-   ```  
-3. Open `Frontend.html` in a browser.  
+You can access the GUI Assembler through this link  
+https://judo1-86.github.io/Frontend-assembler/ 
 
 ---
 
@@ -102,6 +94,7 @@ To use the command-line assembler:
 ## **Limitations**  
 
 ⚠ **Registers are assumed to be in the format `R<number>` but lack range checks.**  
-⚠ **No validation for immediate value range.**  
+⚠ **No validation for immediate value range.**
+## **Please follow the rules for getting ouput correctly **
 
 ---
