@@ -1,0 +1,18 @@
+RULES :
+
+1) Don't give (,) while writing code give spaces 
+ex: add,r1,r2,r3 is wrong
+    add r1 r2 r3 is correct
+
+2) while writing store and load don't write offset as imm[r2] instead write it as r2 imm
+ex: ld r1 r2 5  instead ld r1 5[r2]
+
+3) while giving labeling use ( : ) after label to consider it as label
+ex: label:
+
+4) don't write code beside label instead write below it.
+ex: .label:
+        add r1 r2 r3
+5) Don't put comments while using cmp instruction on the same line of instruction 
+ex: cmp r3, 0 @ compare number with 0 is wrong 
+    just write cmp r3, 0
